@@ -1,25 +1,31 @@
-import { List } from 'immutable';
-import { TodoItem } from './todoitem';
-import { createStore } from 'redux';
-import { reducer, ITodoAction } from './reducer';
+import { Injectable } from '@angular/core';
+
+@Injectable()
+export class Configuration {
+    public Server: string = "http://serverurl/";
+    public ApiUrl: string = "api/";
+    public ServerWithApiUrl = this.Server + this.ApiUrl;
+}
+
+
+import Configuration from './configuration';
 
 export default class TodoStore {
-  store: Redux.Store;
-
+  
   constructor() {
-    const storedItemsString = <string> localStorage.getItem('todolist') || '[]';
+    const storedItemsString = <string> this._http.get(this.actionUrl)
+                              .map((response: Response) => <TodoItem>response.json())
+                              .catch(this.handleError); || '[]';
     const storedItems = <Array<any>> JSON.parse(storedItemsString);
     const items = List<TodoItem>(storedItems.map(i => new TodoItem(i._data)));
-    this.store = createStore(reducer, items);
-
-    this.store.subscribe(() => {
-      localStorage.setItem('todolist', JSON.stringify(this.items.toJS()));
-    });
+    this.actionURL = Configuration.ServerWithApiURL;
   }
 
 
   get items(): List<TodoItem> {
-    return this.store.getState();
+    return this._http.get(this.actionUrl)
+            .map((response: Response) => <TodoItem>response.json())
+            .catch(this.handleError);
   }
 
   dispatch(action: ITodoAction) {
