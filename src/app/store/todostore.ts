@@ -22,13 +22,31 @@ export default class TodoStore {
   }
 
 
-  get items(): List<TodoItem> {
-    return this._http.get(this.actionUrl)
+  public addItem = (item: TodoItem):  Observable<TodoItem> => {
+        let toAdd = JSON.stringify({ item: item });
+
+        return this._http.post(this.actionUrl, toAdd, { headers: this.headers })
             .map((response: Response) => <TodoItem>response.json())
             .catch(this.handleError);
   }
 
-  dispatch(action: ITodoAction) {
-    this.store.dispatch(action);
+  public removeItem = (id: int):  Observable<int> => {
+        return this._http.post(this.actionUrl + "/remove", id, { headers: this.headers })
+            .map((response: Response) => <TodoItem>response.json())
+            .catch(this.handleError);
   }
+  
+  public updateItemText = (id: int, text: string):  Observable<int, string> => {
+        return this._http.post(this.actionUrl + "/updatetext", [id, text], { headers: this.headers })
+            .map((response: Response) => <TodoItem>response.json())
+            .catch(this.handleError);
+  }
+  
+  public updateItemCompletion = (id: int, completed: boolean):  Observable<int, boolean> => {
+        return this._http.post(this.actionUrl + "/updatestate", [id, completed], { headers: this.headers })
+            .map((response: Response) => <TodoItem>response.json())
+            .catch(this.handleError);
+  }
+
+ 
 }
