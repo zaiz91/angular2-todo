@@ -4,12 +4,12 @@ import ItemUpdatedEvent from './itemupdatedevent';
 
 @Component({
   selector: 'todo-item',
-  templateUrl: 'app/todoitem/todoitem.html',
-  styleUrls: ['app/todoitem/todoitem.css'],
+  templateUrl: 'todoitem/todoitem.html',
+  styleUrls: ['todoitem/todoitem.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export default class TodoItem {
-  editMode = false;
+  editMode = false; 
 
   @Input()
   item: TodoItemModel;
